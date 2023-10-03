@@ -8,6 +8,7 @@ class Dict:
         self.dict_common_pass = self.get_common_pass(list)
         self.save_dict_common_pass()
         self.list_code_XXXX()
+
     def get_common_pass(self, list):
         temp_dict = {}
         for i in list:
@@ -27,3 +28,9 @@ class Dict:
                     for c in range(10):
                         for d in range(10):
                             file.write(str(a) + str(b) + str(c) + str(d) + "\n")
+
+    def get_passwords(self):
+        return open(f"{self.FOLDER_PATH}dictionnaire_{'fr'}.txt").read().split('\n')[:-1]
+    
+    def get_code_XXXX(self):
+        return open(f"{self.FOLDER_PATH}number.txt").read().split('\n')[:-1]
