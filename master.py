@@ -1,6 +1,7 @@
 import tkinter
 import db
 import dict
+import threading
 
 
 my_dict = dict.Dict(['fr'])
@@ -10,15 +11,6 @@ common_passwords_list = my_dict.get_passwords()
 digit_list = my_dict.get_code_XXXX()
 colors_list = ['Violet','Indigo','Bleu','Vert','Jaune','Orange','Rouge']
 special_character = "#_&!-;"
-
-
-
-print(common_passwords_list)
-print(digit_list)
-print(colors_list)
-print(special_character)
-
-
 
 my_db = db.DB()
 my_db.create_table("user", ["login", "password"])
@@ -34,6 +26,11 @@ my_db.insert("user",
         ['May','naruto#7']
     ]
 })
+
+def generate_passwords_thread():
+    result = generate_passwords(params)
+    with open('./src/all_password_combinaisons.txt', 'w') as f:
+        f.write('\n'.join(result))
 
 def generate_passwords(lists_to_combine):
     def recursive_combinations(lists, current_combination=[]):
@@ -56,26 +53,26 @@ def generate_passwords(lists_to_combine):
     return all_combinations
 
 def clicked():
-    open('./src/all_password_combinaisons.txt', 'w').write('\n'.join(generate_passwords(params)))
+    password_thread = threading.Thread(target=generate_passwords_thread)
+    password_thread.start()
 
-
-
-
-def common_passwords_selection():
+def checkbox_selection():
     if common_passwords_var.get() == 1:
         params.append(common_passwords_list)
-    
-def digits_selection():
+    elif common_passwords_var.get() == 0 and common_passwords_list in params:
+        params.remove(common_passwords_list)
     if digits_var.get() == 1:
         params.append(digit_list)
-
-def colors_selection():
+    elif digits_var.get() == 0 and digit_list in params:
+        params.remove(digit_list)
     if colors_var.get() == 1:
         params.append(colors_list)
-
-def special_selection():
+    elif colors_var.get() == 0 and colors_list in params:
+        params.remove(colors_list)
     if special_var.get() == 1:
-        params.append(special_character)  
+        params.append(special_character) 
+    elif special_var.get() == 0 and special_character in params:
+        params.remove(special_character) 
 
 window = tkinter.Tk()
 window.title("Brut force password app / tp SIO ")
@@ -90,19 +87,19 @@ e = tkinter.Entry(input_frame)
 e.grid(column=0, row=1)
 
 common_passwords_var = tkinter.IntVar()
-common_passwords = tkinter.Checkbutton(input_frame, text='commons', variable=common_passwords_var, onvalue=1, offvalue=0, command=common_passwords_selection)
+common_passwords = tkinter.Checkbutton(input_frame, text='commons', variable=common_passwords_var, onvalue=1, offvalue=0, command=checkbox_selection)
 common_passwords.grid(column=0, row=2)
 
 digits_var = tkinter.IntVar()
-digits = tkinter.Checkbutton(input_frame, text='digits', variable=digits_var, onvalue=1, offvalue=0, command=digits_selection)
+digits = tkinter.Checkbutton(input_frame, text='digits', variable=digits_var, onvalue=1, offvalue=0, command=checkbox_selection)
 digits.grid(column=1, row=2)
 
 colors_var = tkinter.IntVar()
-colors = tkinter.Checkbutton(input_frame, text='colors', variable=colors_var, onvalue=1, offvalue=0, command=digits_selection)
+colors = tkinter.Checkbutton(input_frame, text='colors', variable=colors_var, onvalue=1, offvalue=0, command=checkbox_selection)
 colors.grid(column=2, row=2)
 
 special_var = tkinter.IntVar()
-special = tkinter.Checkbutton(input_frame, text='specials', variable=special_var, onvalue=1, offvalue=0, command=special_selection)
+special = tkinter.Checkbutton(input_frame, text='specials', variable=special_var, onvalue=1, offvalue=0, command=checkbox_selection)
 special.grid(column=3, row=2)
 
 btn = tkinter.Button(input_frame, text="Click Me", command=clicked)
@@ -111,11 +108,3 @@ btn.grid(column=0, row=3)
 
 
 window.mainloop()
-
-
-
-
-
-
-
-
