@@ -5,4 +5,4 @@ __pycache__
 __init__.py
 *.log
 *.db
-# src/cache/*.txt
+*.txt
