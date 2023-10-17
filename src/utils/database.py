@@ -76,6 +76,7 @@ class MyDatabase:
             logger.error(e)
         finally:
             conn.close()
+            logger.info(data)
             return data
     
     def connect(self):
