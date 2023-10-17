@@ -5,6 +5,24 @@ from src.utils.my_lists import *
 
 class Api:
     def __init__(self, logger) -> None:
+        """
+        Initialise l'API pour la gestion de mots de passe.
+
+        Args:
+            logger (Logger): Le gestionnaire de journaux pour enregistrer les messages.
+
+        Attributes:
+            logger (Logger): Le gestionnaire de journaux pour enregistrer les messages.
+            phase1 (Phase1): Phase 1 pour le traitement des données.
+            db_password (set): Ensemble de mots de passe à partir de la phase 1.
+            phase2 (Phase2): Phase 2 pour la gestion des fichiers et dictionnaires.
+            common_password (list): Liste de mots de passe communs depuis la phase 2.
+            COMPLEMENTS (list): Liste de compléments (animaux, dates, etc.).
+            ID (list): Liste d'identifiants.
+            SPECIALS (list): Liste de caractères spéciaux.
+            arguments (list): Liste des listes à utiliser pour les combinaisons.
+            phase3 (Phase3): Phase 3 pour générer des combinaisons de mots de passe.
+        """
         self.logger = logger
         self.phase1 = Phase1(self.logger)
         self.db_password = []
@@ -20,4 +38,3 @@ class Api:
         self.SPECIALS = SPECIALS
         self.arguments = []
         self.phase3 = Phase3()
-    
