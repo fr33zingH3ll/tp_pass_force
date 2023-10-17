@@ -46,7 +46,6 @@ class MyDatabase:
             logger.info(f"insertion de {data_list}")
             query = f'INSERT INTO {table_name} VALUES ({placeholders})'
             cur.executemany(query, data_list)
-            logger.info(f"insertion de {data_list} réussi")
             conn.commit()
         except sqlite3.Error as e:
             logger.error(e)
@@ -76,7 +75,6 @@ class MyDatabase:
             logger.error(e)
         finally:
             conn.close()
-            logger.info(data)
             return data
     
     def connect(self):

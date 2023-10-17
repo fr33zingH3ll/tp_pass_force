@@ -9,6 +9,7 @@ class Phase2:
     def __init__(self) -> None:
         req = requests.get('https://nordpass.com/json-data/top-worst-passwords/findings/all.json')
         self.common_password = [item['Password'] for item in req.json()]
+        self.save_as_text()
 
     def save_as_text(self):
         try:
