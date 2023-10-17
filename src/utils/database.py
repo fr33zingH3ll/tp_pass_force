@@ -1,8 +1,7 @@
 import sqlite3
-from src.utils.logs_manager import logger
 
 class MyDatabase:
-    def __init__(self, db_file):
+    def __init__(self, db_file, logger):
         """
         Initialize a connection to the SQLite3 database.
 
@@ -10,7 +9,8 @@ class MyDatabase:
             db_file (str): The name of the database file.
         """
         self.db_file = db_file
-        logger.info(f"la base données {db_file} a été chargée avec succès")
+        self.logger = logger
+        self.logger.info(f"la base données {db_file} a été chargée avec succès")
 
     def create_table(self, table_name, data):
         """
@@ -23,12 +23,12 @@ class MyDatabase:
         try:
             conn, cur = self.connect()
             schema = ', '.join([f'{column_name} {column_options}' for column_name, column_options in data.items()])
-            logger.info(f"création de la table {table_name} avec comme champs {schema}")
+            self.logger.info(f"création de la table {table_name} avec comme champs {schema}")
             cur.execute(f'CREATE TABLE IF NOT EXISTS {table_name} ({schema})')
-            logger.info(f"création de la table {table_name} réussi")
+            self.logger.info(f"création de la table {table_name} réussi")
             conn.commit()
         except sqlite3.Error as e:
-            logger.error(e)
+            self.logger.error(e)
         finally:
             conn.close()
 
@@ -43,12 +43,12 @@ class MyDatabase:
         try:
             conn, cur = self.connect()
             placeholders = ', '.join(['?'] * len(data_list[0]))
-            logger.info(f"insertion de {data_list}")
+            self.logger.info(f"insertion de {data_list}")
             query = f'INSERT INTO {table_name} VALUES ({placeholders})'
             cur.executemany(query, data_list)
             conn.commit()
         except sqlite3.Error as e:
-            logger.error(e)
+            self.logger.error(e)
         finally:
             conn.close()
 
@@ -72,13 +72,13 @@ class MyDatabase:
                 cur.execute(f'SELECT * FROM {table_name}')
             data = cur.fetchall()
         except sqlite3.Error as e:
-            logger.error(e)
+            self.logger.error(e)
         finally:
             conn.close()
             return data
     
     def connect(self):
         conn = sqlite3.connect(self.db_file)
-        logger.info(f"connection a la db {self.db_file}")
+        self.logger.info(f"connection a la db {self.db_file}")
         cur = conn.cursor()
         return conn, cur

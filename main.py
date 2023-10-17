@@ -1,8 +1,7 @@
 from src.phase_1 import Phase1
 from src.phase_2 import Phase2
 from src.phase_3 import Phase3
-from src.phase_4 import Phase4
-from src.utils.my_lists import COMPLEMENTS, ID
+from src.utils.my_lists import *
 from src.utils.logs_manager import logger
 
 def main():
@@ -26,3 +25,4 @@ def main():
 
 if __name__=="__main__":
     main()
+    

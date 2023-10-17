@@ -1,10 +1,9 @@
 from src.utils.database import MyDatabase
 from src.utils.fields_options import IntegerOptions, TextOptions
-from src.utils.logs_manager import logger
 
 class Phase1:
-    def __init__(self) -> None:
-        self.db = MyDatabase(db_file="./src/resources/tp_pass_force.db")
+    def __init__(self, logger) -> None:
+        self.db = MyDatabase("./src/resources/tp_pass_force.db", logger)
         self.db.create_table("Password", { 'id': IntegerOptions.integer_ai,'username': TextOptions.varchar, 'password': TextOptions.varchar })
         # self.db.insert_data("Password", 
         #                     [
@@ -15,4 +14,4 @@ class Phase1:
         #                         (None, "Zed", "dragon42"),
         #                         (None, "May", "naruto#7")
         #                     ])
-        self.data = self.db.get_data("Password", ["username", "password"])
+        self.data = self.db.get_data("Password", ["password"])

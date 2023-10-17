@@ -1,5 +1,4 @@
 from itertools import product
-from src.utils.logs_manager import logger
 
 class Phase3:
     def generate_combinations(self, lists, predefined_passwords, chunk_size=1000):
