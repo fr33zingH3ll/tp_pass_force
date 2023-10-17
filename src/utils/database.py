@@ -1,4 +1,6 @@
 import sqlite3
+from src.utils.logs_manager import Logger
+logger = Logger("src/logs")
 
 class MyDatabase:
     def __init__(self, db_file):
@@ -9,6 +11,7 @@ class MyDatabase:
             db_file (str): The name of the database file.
         """
         self.db_file = db_file
+        logger.info(f"la base données {db_file} a été chargée avec succès")
 
     def create_table(self, table_name, data):
         """
@@ -19,15 +22,14 @@ class MyDatabase:
             schema (str): The schema definition of the table (columns and data types).
         """
         try:
-            conn = sqlite3.connect(self.db_file)
-            cur = conn.cursor()
+            conn, cur = self.connect()
             schema = ', '.join([f'{column_name} {column_options}' for column_name, column_options in data.items()])
+            logger.info(f"création de la table {table_name} avec comme champs {schema}")
             cur.execute(f'CREATE TABLE IF NOT EXISTS {table_name} ({schema}')
+            logger.info(f"création de la table {table_name} réussi")
             conn.commit()
         except sqlite3.Error as e:
-            print("SQLite error:", e)
-        finally:
-            conn.close()
+            logger.error(e)
 
     def insert_data(self, table_name, data_list):
         """
@@ -38,16 +40,15 @@ class MyDatabase:
             data_list (list): A list of tuples, where each tuple represents a row of data to insert.
         """
         try:
-            conn = sqlite3.connect(self.db_file)
-            cur = conn.cursor()
+            conn, cur = self.connect()
             placeholders = ', '.join(['?'] * len(data_list[0]))
+            logger.info(f"insertion de {placeholders}")
             query = f'INSERT INTO {table_name} VALUES ({placeholders})'
             cur.executemany(query, data_list)
+            logger.info(f"insertion de {data_list} réussi")
             conn.commit()
         except sqlite3.Error as e:
-            print("SQLite error:", e)
-        finally:
-            conn.close()
+            logger.error(e)
     def get_data(self, table_name, fields=None):
         """
         Retrieve data from a table.
@@ -60,8 +61,7 @@ class MyDatabase:
             list: A list of tuples, where each tuple represents a row of data.
         """
         try:
-            conn = sqlite3.connect(self.db_file)
-            cur = conn.cursor()
+            conn, cur = self.connect()
             if fields:
                 field_list = ', '.join(fields)
                 cur.execute(f'SELECT {field_list} FROM {table_name}')
@@ -72,5 +72,9 @@ class MyDatabase:
         except sqlite3.Error as e:
             print("SQLite error:", e)
             return None
-        finally:
-            conn.close()
+    
+    def connect(self):
+        conn = sqlite3.connect(self.db_file)
+        logger.info(f"connection a la db {self.db_file}")
+        cur = conn.cursor()
+        return conn, cur
