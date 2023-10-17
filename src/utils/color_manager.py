@@ -1,3 +1,8 @@
+INFO = { "message": "INFO : ", "color": "\033[34m" }
+ERROR = { "message": "ERROR : ", "color": "\033[31m" }
+LOG = { "message": "LOG : ", "color": "\033[32m" }
+WARNING = { "message": "WARNING : ", "color": "\033[33m" }
+NOT_DEFINED = { "message": "NOT DEFINED : ", "color": "\033[37m" }
 
 
 class Printer:
@@ -12,12 +17,6 @@ class Printer:
         my_printer.print("Ceci est un warning.", Printer.WARNING)
         my_printer.print("Ceci est un message sans type prédéfinies.")
     """
-    INFO = { "message": "INFO : ", "color": "\033[34m" }
-    ERROR = { "message": "ERROR : ", "color": "\033[31m" }
-    LOG = { "message": "LOG : ", "color": "\033[32m" }
-    WARNING = { "message": "WARNING : ", "color": "\033[33m" }
-    NOT_DEFINED = { "message": "NOT DEFINED : ", "color": "\033[37m" }
-
     ALL = [
         INFO, 
         WARNING, 
