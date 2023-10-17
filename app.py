@@ -25,7 +25,6 @@ class MaFenetre(tk.Tk):
         self.title("Ma Fenêtre Tkinter")
         self.geometry("700x700")
 
-        # Créer une variable pour chaque case à cocher
         self.var_mot_de_passe = tk.BooleanVar()
         self.var_id = tk.BooleanVar()
         self.var_couleur = tk.BooleanVar()
@@ -34,23 +33,19 @@ class MaFenetre(tk.Tk):
         self.label = tk.Label(self, text="Sélectionnez les options :")
         self.label.grid(row=0, column=0, columnspan=4, pady=10)
 
-        # Créer les cases à cocher
         self.check_mot_de_passe = tk.Checkbutton(self, text="Mot de passe commun", variable=self.var_mot_de_passe)
         self.check_id = tk.Checkbutton(self, text="ID", variable=self.var_id)
         self.check_couleur = tk.Checkbutton(self, text="Couleur", variable=self.var_couleur)
         self.check_special = tk.Checkbutton(self, text="Special", variable=self.var_special)
 
-        # Placer les cases à cocher dans la grille
         self.check_mot_de_passe.grid(row=1, column=0)
         self.check_id.grid(row=1, column=1)
         self.check_couleur.grid(row=1, column=2)
         self.check_special.grid(row=1, column=3)
 
-        # Créez une zone de texte redimensionnable avec des barres de défilement
-        self.textbox = ScrolledText(self, wrap=tk.WORD)  # Utilisez ScrolledText
+        self.textbox = ScrolledText(self, wrap=tk.WORD)
         self.textbox.grid(row=2, column=0, columnspan=4, padx=10, pady=10)
 
-        # Créer un bouton
         self.button = tk.Button(self, text="Obtenir la sélection", command=self.get_selection)
         self.button.grid(row=3, column=0, columnspan=4, pady=10)
 
@@ -58,17 +53,14 @@ class MaFenetre(tk.Tk):
         self.api = Api(self.logger)
 
     def get_selection(self):
-        # Récupérer les valeurs des cases à cocher
         
         mot_de_passe = self.var_mot_de_passe.get()
         id = self.var_id.get()
         couleur = self.var_couleur.get()
         special = self.var_special.get()
 
-        # Effacer le contenu actuel de la zone de texte
         self.textbox.delete(1.0, tk.END)
 
-        # Afficher les résultats dans la zone de texte
         self.api.arguments = []
         if mot_de_passe:
             self.api.arguments.append(self.api.common_password)

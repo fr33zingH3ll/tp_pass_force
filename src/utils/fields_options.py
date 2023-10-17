@@ -21,7 +21,6 @@ class IntegerOptions:
     integer_ai = 'INTEGER PRIMARY KEY AUTOINCREMENT'
     smallint = 'SMALLINT'
     bigint = 'BIGINT'
-    # Add more options as needed
 
 
 class RealOptions:
@@ -45,7 +44,6 @@ class RealOptions:
     real_pk = 'REAL PRIMARY KEY'
     real_ai = 'REAL PRIMARY KEY AUTOINCREMENT'
     double = 'DOUBLE'
-    # Add more options as needed
 
 
 class TextOptions:
@@ -69,7 +67,6 @@ class TextOptions:
     text_pk = 'TEXT PRIMARY KEY'
     text_ai = 'TEXT PRIMARY KEY AUTOINCREMENT'
     varchar = 'VARCHAR'
-    # Add more options as needed
 
 
 class BlobOptions:
@@ -85,4 +82,3 @@ class BlobOptions:
     """
 
     blob = 'BLOB'
-    # Add more options as needed

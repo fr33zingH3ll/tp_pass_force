@@ -25,7 +25,6 @@ class Phase3:
                 found_passwords.extend(self.test_combinations(current_chunk, predefined_passwords))
                 current_chunk = []
 
-        # Assurez-vous de renvoyer la dernière partie, si elle n'est pas vide
         if current_chunk:
             found_passwords.extend(self.test_combinations(current_chunk, predefined_passwords))
 

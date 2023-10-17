@@ -20,6 +20,4 @@ class Phase1:
             'username': TextOptions.varchar,
             'password': TextOptions.varchar
         })
-
-        # Chargez les données depuis la base de données pour l'analyse ultérieure
         self.data = self.db.get_data("Password", ["password"])
