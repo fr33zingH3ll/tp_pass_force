@@ -11,10 +11,14 @@ class Phase2:
         self.common_password = [item['Password'] for item in req.json()]
         self.save_as_text()
 
-    def save_as_text(self):
+    def save_as_text(self, file_name=None, list=None):
+        if not list:
+            list = self.common_password
+        if not file_name:
+            file_name = "dictionnaire"
         try:
-            with open(f"{self.folder_path}/dictionnaire.txt", "w") as file:
-                for item in self.common_password:
+            with open(f"{self.folder_path}/{file_name}.txt", "w") as file:
+                for item in list:
                     file.write(f"{item}\n")
         except Exception as e:
             logger.error(f"Erreur lors de la sauvegarde dans le fichier : {e}")

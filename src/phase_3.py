@@ -1,15 +1,31 @@
+from itertools import product
 from src.utils.logs_manager import logger
 
 class Phase3:
-    complement = [
-        "Violet","Jaune","Indigo",
-        "Orange","Bleu","Rouge","Vert"
-    ]
-    def combine_lists(self, list1):
-        return [item1 + item2 for item1 in list1 for item2 in self.complement]
+    def generate_combinations(self, lists, predefined_passwords, chunk_size=1000):
+        current_chunk = []
+        found_passwords = []
 
-    def add_ids_to_list(input_list):
-        return [f"{item}{str(i).zfill(4)}" for i, item in enumerate(input_list)]
+        for combo in product(*lists):
+            concatenated_combo = ''.join(map(str, combo))
+            current_chunk.append(concatenated_combo)
 
-    def find_common_elements(self, list1, list2):
-        return [item for item in list1 if item in list2]
+            if len(current_chunk) >= chunk_size:
+                found_passwords.extend(self.test_combinations(current_chunk, predefined_passwords))
+                current_chunk = []
+
+        # Assurez-vous de renvoyer la dernière partie, si elle n'est pas vide
+        if current_chunk:
+            found_passwords.extend(self.test_combinations(current_chunk, predefined_passwords))
+
+        return found_passwords
+
+    def test_combinations(self, combinations, predefined_passwords):
+        found_passwords = []
+
+        for combo in combinations:
+            if combo in predefined_passwords:
+                found_passwords.append(combo)
+
+        return found_passwords
+    
