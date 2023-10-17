@@ -3,3 +3,5 @@ __pycache__
 /tp_pass_force_venv
 ./tp_pass_force_venv
 __init__.py
+*.log
+*.db
