@@ -143,3 +143,6 @@ class Logger:
             logger.critical("Ceci est un message critique.")
         """
         self.loggers['CRITICAL'].critical(message)
+
+
+logger = Logger("src/logs")

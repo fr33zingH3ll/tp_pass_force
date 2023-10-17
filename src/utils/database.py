@@ -1,6 +1,5 @@
 import sqlite3
-from src.utils.logs_manager import Logger
-logger = Logger("src/logs")
+from src.utils.logs_manager import logger
 
 class MyDatabase:
     def __init__(self, db_file):
@@ -25,11 +24,13 @@ class MyDatabase:
             conn, cur = self.connect()
             schema = ', '.join([f'{column_name} {column_options}' for column_name, column_options in data.items()])
             logger.info(f"création de la table {table_name} avec comme champs {schema}")
-            cur.execute(f'CREATE TABLE IF NOT EXISTS {table_name} ({schema}')
+            cur.execute(f'CREATE TABLE IF NOT EXISTS {table_name} ({schema})')
             logger.info(f"création de la table {table_name} réussi")
             conn.commit()
         except sqlite3.Error as e:
             logger.error(e)
+        finally:
+            conn.close()
 
     def insert_data(self, table_name, data_list):
         """
@@ -42,13 +43,16 @@ class MyDatabase:
         try:
             conn, cur = self.connect()
             placeholders = ', '.join(['?'] * len(data_list[0]))
-            logger.info(f"insertion de {placeholders}")
+            logger.info(f"insertion de {data_list}")
             query = f'INSERT INTO {table_name} VALUES ({placeholders})'
             cur.executemany(query, data_list)
             logger.info(f"insertion de {data_list} réussi")
             conn.commit()
         except sqlite3.Error as e:
             logger.error(e)
+        finally:
+            conn.close()
+
     def get_data(self, table_name, fields=None):
         """
         Retrieve data from a table.
@@ -68,10 +72,11 @@ class MyDatabase:
             else:
                 cur.execute(f'SELECT * FROM {table_name}')
             data = cur.fetchall()
-            return data
         except sqlite3.Error as e:
-            print("SQLite error:", e)
-            return None
+            logger.error(e)
+        finally:
+            conn.close()
+            return data
     
     def connect(self):
         conn = sqlite3.connect(self.db_file)
