@@ -1,8 +1,5 @@
 import requests
-
-from utils.logs_manager import logger
-#from src.utils.logs_manager import logger
-
+from src.utils.logs_manager import logger
 
 class Phase2:
 
@@ -12,7 +9,6 @@ class Phase2:
     def __init__(self) -> None:
         req = requests.get('https://nordpass.com/json-data/top-worst-passwords/findings/all.json')
         self.common_password = [item['Password'] for item in req.json()]
-        logger.info(self.common_password)
 
     def save_as_text(self):
         try:
@@ -35,7 +31,4 @@ class Phase2:
             logger.error(f"Le fichier {self.folder_path}/{file}.txt n'a pas été trouvé.")
         except Exception as e:
             logger.error(f"Une erreur s'est produite : {e}")
-
-
-phase_2 = Phase2()
-phase_2.save_as_text()
+        return self.common_password

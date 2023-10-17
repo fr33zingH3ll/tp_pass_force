@@ -15,4 +15,4 @@ class Phase1:
                                 (None, "Zed", "dragon42"),
                                 (None, "May", "naruto#7")
                             ])
-        self.db.get_data("Password", ["password"])
+        self.data = self.db.get_data("Password", ["username", "password"])
