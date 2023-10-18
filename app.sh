@@ -2,6 +2,7 @@
 
 # Variables
 os_info=$(uname)
+echo $os_info
 venv="tp_pass_force_venv"
 module_name="index"
 destination="html/tp_pass_force"
@@ -9,10 +10,13 @@ destination="html/tp_pass_force"
 # Vérifiez le système d'exploitation
 if [ "$os_info" == "Linux" ]; then
     echo "Système d'exploitation : Linux"
+    source "$venv"/bin/activate
 elif [ "$os_info" == "Darwin" ]; then
     echo "Système d'exploitation : macOS"
-elif [ "$os_info" == "MINGW64_NT-10.0" ]; then  # Vérifiez la chaîne de la fenêtre Git Bash pour Windows
+    source "$venv"/bin/activate
+elif [ "$os_info" == "MINGW64_NT-10.0-19045" ]; then  # Vérifiez la chaîne de la fenêtre Git Bash pour Windows
     echo "Système d'exploitation : Windows"
+    source ".\tp_pass_force_venv\Scripts\activate"
 else
     echo "Système d'exploitation non reconnu : $os_info"
 fi
