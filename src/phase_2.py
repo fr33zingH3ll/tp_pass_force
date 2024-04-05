@@ -15,8 +15,7 @@ class Phase2:
             phase2 = Phase2(logger)
         """
         self.logger = logger
-        req = requests.get('https://nordpass.com/json-data/top-worst-passwords/findings/all.json')
-        self.common_password = [item['Password'] for item in req.json()]
+        self.common_password = []
         self.folder_path = "src/cache"
 
         self.save_as_text()
