@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText  # Importez ScrolledText
 from src.utils.logs_manager import Logger
-from backend import Api
+from src.options.json_import import importer_json, is_valid_json
 
 class MaFenetre(tk.Tk):
     def __init__(self):
@@ -50,7 +50,25 @@ class MaFenetre(tk.Tk):
         self.button.grid(row=3, column=0, columnspan=4, pady=10)
 
         self.logger = Logger("src/logs", text_widget=self.textbox)
-        self.api = Api(self.logger)
+
+        # Créer le menu avec deux options principales
+        self.menu_principal = tk.Menu(self)
+        self.config(menu=self.menu_principal)
+
+        self.option1_menu = tk.Menu(self.menu_principal, tearoff=0)
+        self.option1_menu.add_command(label="Importer JSON", command=lambda: importer_json(self.logger))
+        self.option1_menu.add_checkbutton(label="Sous-option 1B", variable=tk.BooleanVar())
+        self.option1_menu.add_checkbutton(label="Sous-option 1C", variable=tk.BooleanVar())
+
+        self.option2_menu = tk.Menu(self.menu_principal, tearoff=0)
+        self.option2_menu.add_checkbutton(label="Sous-option 2A", variable=tk.BooleanVar())
+        self.option2_menu.add_checkbutton(label="Sous-option 2B", variable=tk.BooleanVar())
+        self.option2_menu.add_checkbutton(label="Sous-option 2C", variable=tk.BooleanVar())
+
+        self.menu_principal.add_cascade(label="Option 1", menu=self.option1_menu)
+        self.menu_principal.add_cascade(label="Option 2", menu=self.option2_menu)
+
+
 
     def get_selection(self):
         
