@@ -1,47 +1,45 @@
 import tkinter as tk
-from tkinter.scrolledtext import ScrolledText  # Importez ScrolledText
+from tkinter.scrolledtext import ScrolledText  
 from src.utils.logs_manager import Logger
-from src.options.json_import import importer_json, is_valid_json
+from src.options.json_import import importer_json
+from src.phase_3 import generate_combinations, arguments 
+from src.utils.my_lists import ALLS
 
 class MaFenetre(tk.Tk):
     def __init__(self):
-        """
-        Initialise la fenêtre Tkinter.
-
-        Cette fenêtre contient des cases à cocher pour sélectionner des options, une zone de texte redimensionnable avec
-        des barres de défilement, et un bouton pour obtenir la sélection.
-
-        Options :
-            - "Mot de passe commun" : Affiche une liste de mots de passe communs.
-            - "ID" : Affiche une liste d'identifiants.
-            - "Couleur" : Affiche une liste de couleurs.
-            - "Special" : Affiche une liste de caractères spéciaux.
-
-        Appuyez sur le bouton "Obtenir la sélection" pour afficher les résultats dans la zone de texte.
-
-        """
         tk.Tk.__init__(self)
 
         self.title("Ma Fenêtre Tkinter")
         self.geometry("700x700")
 
-        self.var_mot_de_passe = tk.BooleanVar()
-        self.var_id = tk.BooleanVar()
-        self.var_couleur = tk.BooleanVar()
-        self.var_special = tk.BooleanVar()
+        self.create_widgets()
 
+        self.logger = Logger("src/logs", text_widget=self.textbox)
+        self.password_list = {}
+
+        self.create_menu()
+
+    def create_widgets(self):
         self.label = tk.Label(self, text="Sélectionnez les options :")
         self.label.grid(row=0, column=0, columnspan=4, pady=10)
 
-        self.check_mot_de_passe = tk.Checkbutton(self, text="Mot de passe commun", variable=self.var_mot_de_passe)
-        self.check_id = tk.Checkbutton(self, text="ID", variable=self.var_id)
-        self.check_couleur = tk.Checkbutton(self, text="Couleur", variable=self.var_couleur)
-        self.check_special = tk.Checkbutton(self, text="Special", variable=self.var_special)
+        self.widgets = []  # Liste pour stocker les widgets créés
 
-        self.check_mot_de_passe.grid(row=1, column=0)
-        self.check_id.grid(row=1, column=1)
-        self.check_couleur.grid(row=1, column=2)
-        self.check_special.grid(row=1, column=3)
+        for i, option in enumerate(ALLS):
+            if option == "ALGOS":
+                # Créer une liste d'options pour ALGOS
+                algos_options = [algo for algo in ALLS["ALGOS"]]
+                selected_algo = tk.StringVar()  # Variable pour stocker l'option sélectionnée
+                selected_algo.set(algos_options[0])  # Définir la première option comme sélectionnée par défaut
+
+                algos_menu = tk.OptionMenu(self, selected_algo, *algos_options)
+                algos_menu.grid(row=1, column=i+1)
+                self.widgets.append((option, algos_menu, selected_algo))
+            else:
+                var = tk.BooleanVar()
+                checkbox = tk.Checkbutton(self, text=option, variable=var)
+                checkbox.grid(row=1, column=i+1)
+                self.widgets.append((option, checkbox, var))
 
         self.textbox = ScrolledText(self, wrap=tk.WORD)
         self.textbox.grid(row=2, column=0, columnspan=4, padx=10, pady=10)
@@ -49,14 +47,13 @@ class MaFenetre(tk.Tk):
         self.button = tk.Button(self, text="Obtenir la sélection", command=self.get_selection)
         self.button.grid(row=3, column=0, columnspan=4, pady=10)
 
-        self.logger = Logger("src/logs", text_widget=self.textbox)
 
-        # Créer le menu avec deux options principales
+    def create_menu(self):
         self.menu_principal = tk.Menu(self)
         self.config(menu=self.menu_principal)
 
         self.option1_menu = tk.Menu(self.menu_principal, tearoff=0)
-        self.option1_menu.add_command(label="Importer JSON", command=lambda: importer_json(self.logger))
+        self.option1_menu.add_command(label="Importer JSON", command=lambda: self.json_import())
         self.option1_menu.add_checkbutton(label="Sous-option 1B", variable=tk.BooleanVar())
         self.option1_menu.add_checkbutton(label="Sous-option 1C", variable=tk.BooleanVar())
 
@@ -68,33 +65,31 @@ class MaFenetre(tk.Tk):
         self.menu_principal.add_cascade(label="Option 1", menu=self.option1_menu)
         self.menu_principal.add_cascade(label="Option 2", menu=self.option2_menu)
 
-
+    def json_import(self):
+        self.password_list = importer_json(self.logger)
 
     def get_selection(self):
-        
-        mot_de_passe = self.var_mot_de_passe.get()
-        id = self.var_id.get()
-        couleur = self.var_couleur.get()
-        special = self.var_special.get()
-
+        arguments.clear()  # Efface les arguments précédents à chaque appel
         self.textbox.delete(1.0, tk.END)
 
-        self.api.arguments = []
-        if mot_de_passe:
-            self.api.arguments.append(self.api.common_password)
-            self.logger.info("ajout de la liste common_password")
-        if id:
-            self.api.arguments.append(self.api.ID)
-            self.logger.info("ajout de la liste id")
-        if couleur:
-            self.api.arguments.append(self.api.COMPLEMENTS)
-            self.logger.info("ajout de la liste couleur")
-        if special:
-            self.api.arguments.append(self.api.SPECIALS)
-            self.logger.info("ajout de la liste specials")
+        for option, widget, var in self.widgets:
+            if isinstance(widget, tk.Checkbutton) and var.get():
+                if option in ALLS:
+                    arguments.append(ALLS[option])
+                    self.logger.info(f"Ajout de la liste {option}")
+                else:
+                    self.logger.warning(f"Option {option} non prise en charge")
 
-        self.logger.info(f"mot de passe commun : {self.api.phase3.generate_combinations(self.api.arguments, self.api.db_password)}")
-        
+        # Traiter les sélections des listes déroulantes
+        for option, widget, var in self.widgets:
+            if isinstance(widget, tk.OptionMenu):
+                selected_option = var.get()
+                # Ajouter le code pour gérer les sélections des listes déroulantes
+                if selected_option == "": self.logger.info(f"Sélection dans la liste déroulante {option}: None")
+                else: self.logger.info(f"Sélection dans la liste déroulante {option}: {selected_option}")
+        self.logger.info(f"mot de passe commun : {generate_combinations(arguments, self.password_list, hash=selected_option)}")
+                
+
 
 if __name__ == "__main__":
     app = MaFenetre()

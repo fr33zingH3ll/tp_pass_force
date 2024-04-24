@@ -35,3 +35,4 @@ def importer_json(logger):
         destination_folder = "src/cache"
         shutil.copy(filename, destination_folder)
         logger.info(f"Fichier JSON copié vers : {destination_folder}")
+        return data
